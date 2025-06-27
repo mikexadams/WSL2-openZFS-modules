@@ -1,0 +1,39 @@
+name: Build WSL2 Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+              build-essential \
+              flex \
+              bison \
+              libssl-dev \
+              libelf-dev \ 
+              dwarves bc
+              
+
+      - name: Configure kernel
+        run: |
+          cp Microsoft/config-wsl .config
+          scripts/config --set-str LOCALVERSION "-microsoft-standard-WSL2"
+          scripts/config --disable LOCALVERSION_AUTO
+          make olddefconfig
+
+      - name: Build kernel
+        run: make -j$(nproc)
+
+      - name: Upload bzImage
+        uses: actions/upload-artifact@v3
+        with:
+          name: bzImage
+          path: arch/x86/boot/bzImage
