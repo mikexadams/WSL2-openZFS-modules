@@ -1,0 +1,9 @@
+
+Dependencies:
+    sudo apt install \
+              libaio-dev \
+              libunwind-dev \
+              libtirpc-dev \
+              libudev-dev uuid-dev \
+              libblkid-dev \
+              zlib1g-dev
